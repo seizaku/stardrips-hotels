@@ -49,9 +49,9 @@ const matchedListingsRouter = createTRPCRouter({
       // Fetch the total count of rows
       const countResult = await bigquery.query<{ total: number }>({
         query: `
-      SELECT COUNT(*) as total
-      FROM mailcrux.hotel_listings_with_metadata
-    `,
+          SELECT COUNT(*) as total
+          FROM mailcrux.hotel_listings_with_metadata
+        `,
       });
 
       const total = countResult[0]?.total ?? 0;
