@@ -20,9 +20,11 @@ const hotelRouter = createTRPCRouter({
   fetchAll: publicProcedure.query(async () => {
     const bigquery = new BigQuery();
 
-    const rows = await bigquery.query<Hotel>(`
+    const rows = await bigquery.query<Hotel>({
+      query: `
         SELECT * FROM stardrips.email_metrics
-      `);
+      `,
+    });
 
     return rows;
   }),
