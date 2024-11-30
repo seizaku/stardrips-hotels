@@ -6,7 +6,7 @@ import {
 import { env } from "~/env";
 
 export class BigQuery {
-  private client: BigQueryClient;
+  public client: BigQueryClient;
 
   constructor(options?: BigQueryOptions) {
     this.client = new BigQueryClient({
