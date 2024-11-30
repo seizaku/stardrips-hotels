@@ -3,6 +3,7 @@ import { BigQuery } from "~/server/api/common/bigquery";
 import { z } from "zod";
 
 export type Listing = {
+  hotel_name: string;
   label: string;
   placeId: string;
   city: string;
