@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   BigQuery as BigQueryClient,
   type BigQueryOptions,
@@ -19,9 +21,12 @@ export class BigQuery {
     });
   }
 
-  async query<T>(sqlQuery: string): Promise<T[]> {
+  async query<T>(params: { query: string; params?: any }): Promise<T[]> {
     try {
-      const [rows] = await this.client.query({ query: sqlQuery });
+      const [rows] = await this.client.query({
+        query: params.query,
+        params: params.params,
+      });
       return rows;
     } catch (error) {
       console.error("Error querying BigQuery:", error);
