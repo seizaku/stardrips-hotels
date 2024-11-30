@@ -20,7 +20,7 @@ const promotionRouter = createTRPCRouter({
   fetchAll: publicProcedure.query(async () => {
     const bigquery = new BigQuery();
 
-    const rows = await bigquery.query<Promotion[]>(`
+    const rows = await bigquery.query<Promotion>(`
         SELECT *
         FROM stardrips.email_promos p
         INNER JOIN stardrips.hotels h
