@@ -97,7 +97,7 @@ export const DataTable = <TValue,>({
     <div className="overflow-x-auto">
       <h1 className="text-2xl font-medium">Matched Listings</h1>
       <p className="mb-2 text-sm text-muted-foreground">
-        {data?.length || 0} total matched.
+        {numRows} total matched.
       </p>
       <p className="max-w-2xl text-sm">
         {`This table shows all the hotel listings from the Google Sheet that matched our listings by group name, subscribed email, or hotel name.`}
