@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-import { z } from "zod";
-
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { BigQuery } from "~/server/api/common/bigquery";
 
@@ -23,7 +20,7 @@ const promotionRouter = createTRPCRouter({
   fetchAll: publicProcedure.query(async () => {
     const bigquery = new BigQuery();
 
-    const rows = await bigquery.query(`
+    const rows = await bigquery.query<Promotion[]>(`
         SELECT *
         FROM stardrips.email_promos p
         INNER JOIN stardrips.hotels h
