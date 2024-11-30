@@ -5,7 +5,17 @@ import { type Listing } from "~/server/api/routers/matched-listings/router";
 
 export const columns: ColumnDef<Listing>[] = [
   {
+    accessorKey: "hotel_name",
+    header: () => {
+      return <>Sheet Name</>;
+    },
+    minSize: 400,
+  },
+  {
     accessorKey: "label",
+    header: () => {
+      return <>Booking.com Name</>;
+    },
     minSize: 400,
   },
   {
