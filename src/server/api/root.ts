@@ -2,6 +2,8 @@ import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 import { promotionRouter } from "./routers/promos/router";
 import { hotelRouter } from "./routers/hotels/router";
 import { emailRouter } from "./routers/emails/router";
+import { matchedListingsRouter } from "./routers/matched-listings/router";
+import { unmatchedListingsRouter } from "./routers/unmatched-listings/router";
 
 /**
  * This is the primary router for your server.
@@ -12,6 +14,8 @@ export const appRouter = createTRPCRouter({
   email: emailRouter,
   hotel: hotelRouter,
   promotion: promotionRouter,
+  matchedListings: matchedListingsRouter,
+  unmatchedListings: unmatchedListingsRouter,
 });
 
 // export type definition of API
