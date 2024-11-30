@@ -50,7 +50,6 @@ export const DataTable = <TValue,>({
   columns: ColumnDef<Promotion, TValue>[];
   data: Promotion[];
   isLoading?: boolean;
-  editable?: boolean;
 }) => {
   const [colSizing, setColSizing] = useState<ColumnSizingState>({});
   const [sorting, setSorting] = useState<SortingState>([]);
