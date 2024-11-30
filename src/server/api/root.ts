@@ -1,5 +1,6 @@
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 import { promotionRouter } from "./routers/promos/router";
+import { hotelRouter } from "./routers/hotels/router";
 
 /**
  * This is the primary router for your server.
@@ -7,6 +8,7 @@ import { promotionRouter } from "./routers/promos/router";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
+  hotel: hotelRouter,
   promotion: promotionRouter,
 });
 
