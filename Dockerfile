@@ -14,6 +14,9 @@ COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED 1
 
+ARG SKIP_ENV_VALIDATION=false
+ENV SKIP_ENV_VALIDATION=${SKIP_ENV_VALIDATION}
+
 RUN npm run build
 
 FROM base AS runner
@@ -21,7 +24,6 @@ WORKDIR /app
 
 ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
-ENV SKIP_ENV_VALIDATION=true
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
