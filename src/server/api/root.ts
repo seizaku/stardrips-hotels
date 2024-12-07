@@ -2,8 +2,7 @@ import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 import { promotionRouter } from "./routers/promos/router";
 import { hotelRouter } from "./routers/hotels/router";
 import { emailRouter } from "./routers/emails/router";
-import { matchedListingsRouter } from "./routers/matched-listings/router";
-import { unmatchedListingsRouter } from "./routers/unmatched-listings/router";
+import { matchedListingsRouter } from "~/server/api/routers/listings/router";
 import { pubSubRouter } from "./routers/pubsub/router";
 import { authRouter } from "./routers/auth/router";
 
@@ -17,7 +16,6 @@ export const appRouter = createTRPCRouter({
   hotel: hotelRouter,
   promotion: promotionRouter,
   matchedListings: matchedListingsRouter,
-  unmatchedListings: unmatchedListingsRouter,
   pubSub: pubSubRouter,
   auth: authRouter,
 });

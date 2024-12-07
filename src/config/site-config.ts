@@ -13,12 +13,8 @@ const siteConfig = {
       href: "/promotions",
     },
     {
-      title: "Matched Listings",
-      href: "/matched",
-    },
-    {
-      title: "Unmatched Listings",
-      href: "/unmatched",
+      title: "Track Listings",
+      href: "/listings",
     },
   ],
 };

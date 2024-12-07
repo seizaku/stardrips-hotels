@@ -6,8 +6,8 @@ const fetchGmailMessages = async (gmail: Gmail, nextPageToken?: string) => {
   return await gmail.client.users.messages.list({
     userId: "me",
     q: "-label:BQTrackedEmails",
-    pageToken: nextPageToken,
-    maxResults: 10,
+    pageToken: nextPageToken ?? undefined,
+    maxResults: 5,
   });
 };
 
