@@ -51,7 +51,7 @@ export const columns: ColumnDef<Listing>[] = [
     cell: ({ cell }) => {
       return (
         <ol>
-          {JSON.parse(cell.getValue() as string)?.map(
+          {JSON.parse(cell.getValue() as string ?? "[]")?.map(
             (text: string, index: number) => (
               <li key={text}>
                 <a className="text-blue-500 hover:text-blue-400" href={text}>
@@ -71,7 +71,7 @@ export const columns: ColumnDef<Listing>[] = [
     cell: ({ cell }) => {
       return (
         <ol className="list-disc">
-          {JSON.parse(cell.getValue() as string)?.map(
+          {JSON.parse(cell.getValue() as string ?? "[]")?.map(
             (text: string, index: number) => (
               <li key={`${text}-${index}`}>{text}</li>
             ),
@@ -88,7 +88,7 @@ export const columns: ColumnDef<Listing>[] = [
       return (
         <ul>
           {(
-            JSON.parse(cell.getValue() as string) as {
+            JSON.parse(cell.getValue() as string ?? "[]") as {
               category: string;
               rating: number;
             }[]
@@ -108,7 +108,7 @@ export const columns: ColumnDef<Listing>[] = [
     cell: ({ cell }) => {
       return (
         <ol className="list-disc">
-          {JSON.parse(cell.getValue() as string)?.map((text: string) => (
+          {JSON.parse(cell.getValue() as string ?? "[]")?.map((text: string) => (
             <li key={text}>{text}</li>
           ))}
         </ol>
