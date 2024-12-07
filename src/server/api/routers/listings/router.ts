@@ -23,6 +23,9 @@ export type Listing = {
   website: string;
 };
 
+/**
+ * Retrieves both matched and unmatched listings from BigQuery.
+ */
 const listingsRouter = createTRPCRouter({
   fetchAll: publicProcedure
     .input(
@@ -34,7 +37,6 @@ const listingsRouter = createTRPCRouter({
     .query(async ({ input }) => {
       const bigquery = new BigQuery();
 
-      // Fetch the paginated rows
       const rows = await bigquery.query<Listing>({
         query: `
           SELECT *
@@ -47,8 +49,6 @@ const listingsRouter = createTRPCRouter({
         },
       });
 
-
-      // Fetch the total count of rows
       const countResult = await bigquery.query<{ total: number }>({
         query: `
           SELECT COUNT(*) as total

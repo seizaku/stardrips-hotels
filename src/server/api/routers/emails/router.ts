@@ -29,6 +29,9 @@ export type EmailWithPromocode = Email & {
   summary: string;
 };
 
+/**
+ * Retrieves all emails from BigQuery.
+ */
 const emailRouter = createTRPCRouter({
   fetchWithPagination: publicProcedure
     .input(

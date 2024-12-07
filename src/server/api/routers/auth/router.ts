@@ -2,6 +2,9 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { GoogleAuth } from "~/server/api/common/oauth";
 import { z } from "zod";
 
+/**
+ * Handle authentication for Google Services
+ */
 const authRouter = createTRPCRouter({
   getAuthURL: publicProcedure.query(async () => {
     const client = new GoogleAuth();

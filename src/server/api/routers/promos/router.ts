@@ -16,6 +16,9 @@ export type Promotion = {
   email: string;
 };
 
+/**
+ * Retrieves all promotions converted by Stardrips
+ */
 const promotionRouter = createTRPCRouter({
   fetchAll: publicProcedure.query(async () => {
     const bigquery = new BigQuery();

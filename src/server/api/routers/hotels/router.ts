@@ -16,6 +16,9 @@ export type Hotel = {
   last_updated: { value: string };
 };
 
+/**
+ * Retrieves hotel and hotel group data along with email metrics from BigQuery.
+ */
 const hotelRouter = createTRPCRouter({
   fetchAll: publicProcedure.query(async () => {
     const bigquery = new BigQuery();
