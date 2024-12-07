@@ -191,6 +191,27 @@ Run the Development Server:
 ```bash
 npm run dev
 ```
+
+## Usage
+
+To configure and use this project, please follow these instructions:
+
+1. Access the application's authentication route by navigating to `/auth`.
+2. Select the "Request Token" option to generate a token.
+3. Copy the generated `refresh token`.
+4. Locate the `.env` file in the root directory of your project and open it.
+5. Add the copied refresh token to the file as follows:
+
+   ```
+   CLIENT_REFRESH_TOKEN=your_copied_refresh_token_here
+   ```
+
+6. Save the changes and, if necessary, restart your server to apply the new configuration.
+
+Upon successful setup, new emails will be processed and delivered to the `/api/pubsub` endpoint through the Pub/Sub webhook, ensuring continuous updates with the latest email data.
+
+Please ensure that your environment variables remain private and secure.
+
 ## Environment Variables
 
 To run this project, you will need to add the following environment variables to your .env file
