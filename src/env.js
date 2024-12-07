@@ -11,6 +11,10 @@ export const env = createEnv({
     PROJECT_ID: z.string(),
     SERVICE_EMAIL: z.string(),
     SERVICE_PRIVATE_KEY: z.string(),
+    CLIENT_ID: z.string(),
+    CLIENT_SECRET: z.string(),
+    CLIENT_REFRESH_TOKEN: z.string(),
+    REDIRECT_URL: z.string(),
   },
 
   /**
@@ -31,6 +35,10 @@ export const env = createEnv({
     PROJECT_ID: process.env.PROJECT_ID,
     SERVICE_EMAIL: process.env.SERVICE_EMAIL,
     SERVICE_PRIVATE_KEY: process.env.SERVICE_PRIVATE_KEY,
+    CLIENT_ID: process.env.CLIENT_ID,
+    CLIENT_SECRET: process.env.CLIENT_SECRET,
+    REDIRECT_URL: process.env.REDIRECT_URL,
+    CLIENT_REFRESH_TOKEN: process.env.CLIENT_REFRESH_TOKEN,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**
