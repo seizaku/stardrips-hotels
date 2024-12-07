@@ -96,8 +96,7 @@ export const DataTable = <TValue,>({
         {data?.length || 0} total Hotels.
       </p>
       <p className="max-w-2xl text-sm">
-        {`This table shows all invidivual hotel / hotel group from different emails received.`}
-      </p>
+        {`This table displays each individual hotel or hotel group from the various emails received, all the emails subscribed to this hotel's email list, and the respective metrics for each hotel.`}      </p>
 
       <div className="flex flex-col justify-between gap-2 py-4 sm:flex-row">
         <div className="flex flex-col gap-2 sm:flex-row">

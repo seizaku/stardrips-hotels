@@ -94,7 +94,7 @@ export const DataTable = <TValue,>({
       </p>
 
       <p className="max-w-2xl text-sm">
-        {`This table shows all emails from different hotels.`}
+        {`This table lists all the emails from various hotels.`}
       </p>
 
       <div className="flex flex-col justify-between gap-2 py-4 sm:flex-row">
