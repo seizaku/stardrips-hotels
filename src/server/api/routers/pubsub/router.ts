@@ -32,7 +32,7 @@ const pubSubRouter = createTRPCRouter({
               return await processGmailMessage(gmail, item).then(
                 async (email) => {
                   if (!email) return null;
-                  console.log(email);
+
                   const hotelExists = await bigquery.query<{ count: number }>({
                     query:
                       "SELECT COUNT(*) FROM main.hotels WHERE email = @email",

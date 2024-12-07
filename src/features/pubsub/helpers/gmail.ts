@@ -7,7 +7,7 @@ const fetchGmailMessages = async (gmail: Gmail, nextPageToken?: string) => {
     userId: "me",
     q: "-label:BQTrackedEmails",
     pageToken: nextPageToken,
-    maxResults: 100,
+    maxResults: 10,
   });
 };
 
