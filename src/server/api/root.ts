@@ -4,6 +4,8 @@ import { hotelRouter } from "./routers/hotels/router";
 import { emailRouter } from "./routers/emails/router";
 import { matchedListingsRouter } from "./routers/matched-listings/router";
 import { unmatchedListingsRouter } from "./routers/unmatched-listings/router";
+import { pubSubRouter } from "./routers/pubsub/router";
+import { authRouter } from "./routers/auth/router";
 
 /**
  * This is the primary router for your server.
@@ -16,6 +18,8 @@ export const appRouter = createTRPCRouter({
   promotion: promotionRouter,
   matchedListings: matchedListingsRouter,
   unmatchedListings: unmatchedListingsRouter,
+  pubSub: pubSubRouter,
+  auth: authRouter,
 });
 
 // export type definition of API
