@@ -7,7 +7,7 @@ import { TableStore } from "~/features/listings/stores/table-store";
 
 const Listings = () => {
   const { page } = TableStore();
-  const { data, isLoading } = api.matchedListings.fetchAll.useQuery({
+  const { data, isLoading } = api.listings.fetchAll.useQuery({
     limit: 100,
     offset: page,
   });
