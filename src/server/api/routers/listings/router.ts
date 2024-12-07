@@ -23,7 +23,7 @@ export type Listing = {
   website: string;
 };
 
-const matchedListingsRouter = createTRPCRouter({
+const listingsRouter = createTRPCRouter({
   fetchAll: publicProcedure
     .input(
       z.object({
@@ -38,7 +38,7 @@ const matchedListingsRouter = createTRPCRouter({
       const rows = await bigquery.query<Listing>({
         query: `
           SELECT *
-          FROM mailcrux.hotel_listings_with_metadata
+          FROM mailcrux.listings
           LIMIT @limit OFFSET @offset
         `,
         params: {
@@ -47,13 +47,16 @@ const matchedListingsRouter = createTRPCRouter({
         },
       });
 
+
       // Fetch the total count of rows
       const countResult = await bigquery.query<{ total: number }>({
         query: `
           SELECT COUNT(*) as total
-          FROM mailcrux.hotel_listings_with_metadata
+          FROM mailcrux.listings
         `,
       });
+
+      console.log(countResult);
 
       const total = countResult[0]?.total ?? 0;
 
@@ -61,4 +64,4 @@ const matchedListingsRouter = createTRPCRouter({
     }),
 });
 
-export { matchedListingsRouter };
+export { listingsRouter };
