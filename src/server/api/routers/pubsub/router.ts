@@ -95,6 +95,15 @@ const pubSubRouter = createTRPCRouter({
       }
     } while (nextPageToken);
   }),
+  watchGmail: publicProcedure.mutation(async () => {
+    const gmail = new Gmail();
+    await gmail.client.users.watch({
+      userId: "me",
+      requestBody: {
+        topicName: "projects/stardrips/topics/gmail",
+      },
+    });
+  })
 });
 
 export { pubSubRouter };
