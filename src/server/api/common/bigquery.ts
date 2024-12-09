@@ -1,7 +1,6 @@
 import { BigQuery as BigQueryClient, type Query } from "@google-cloud/bigquery";
 import { env } from "~/env";
 import {fromBase64} from "js-base64";
-import type { JWTInput} from "google-auth-library";
 
 export class BigQuery {
   public client: BigQueryClient;
