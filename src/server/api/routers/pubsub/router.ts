@@ -1,109 +1,116 @@
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import {
   fetchGmailMessages,
   processGmailMessage,
 } from "~/features/pubsub/helpers/gmail";
+import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { BigQuery } from "~/server/api/common/bigquery";
 import { Gmail } from "~/server/api/common/gmail";
 import { extractDomain } from "~/features/pubsub/helpers/domain";
 import getMetaData from "metadata-scraper";
 
+const LABEL_ID = "Label_4124065210019607459";
+
+/**
+ * Extracts metadata and inserts a new hotel record into BigQuery.
+ */
+async function handleNewHotel(bigquery: BigQuery, email: { from: string }) {
+  const { provider, domain } = extractDomain(email.from);
+  try {
+    const url = `https://${domain}`;
+    const data = await getMetaData(url);
+
+    await bigquery.client.dataset("main").table("hotels").insert([{
+      email: email.from,
+      hotel: data.provider,
+    }]);
+  } catch {
+    console.warn("Failed to insert record, retrying...");
+    await bigquery.client.dataset("main").table("hotels").insert([{
+      email: email.from,
+      hotel: provider,
+    }]);
+  }
+}
+
 /**
  * Router for processing new Gmail messages received via Pub/Sub POST requests.
- * This router handles incoming notifications about new email messages.
  */
 const pubSubRouter = createTRPCRouter({
   gmail: publicProcedure.query(async () => {
-    const gmail = new Gmail();
+    const gmailClient = new Gmail();
     const bigquery = new BigQuery();
 
-    let count = 0;
-    let nextPageToken = undefined;
+    let processedEmailCount = 0;
+    let nextPageToken: string | undefined | null;
+
+    console.log("Total threads", await gmailClient.client.users.getProfile({
+      userId: "me",
+    }));
 
     do {
       try {
-        const messagesResponse = await fetchGmailMessages(gmail, nextPageToken);
-        /**
-         * Process each raw email and convert it into structured JSON format.
-         */
+        const messagesResponse = await fetchGmailMessages(gmailClient, nextPageToken ?? undefined);
+
         const processedEmails = (
-          await Promise.all(
-            messagesResponse.data.messages!.map(async (item) => {
-              return await processGmailMessage(gmail, item).then(
-                async (email) => {
-                  if (!email) return null;
+            await Promise.all(messagesResponse.data.messages!.map(async (item) => {
+              try {
+                const email = await processGmailMessage(gmailClient, item);
+                if (!email) return null;
 
-                  const hotelExists = await bigquery.query<{ count: number }>({
-                    query:
-                      "SELECT COUNT(*) FROM main.hotels WHERE email = @email",
-                    params: { email: email.from },
-                  });
+                const [hotelExists] = await bigquery.query<{ count: number }>({
+                  query: "SELECT COUNT(*) FROM main.hotels WHERE email = @email",
+                  params: { email: email.from },
+                });
 
-                  /**
-                   * If the hotel does not exist, extract its metadata and insert into the BigQuery table
-                   */
-                  if (!hotelExists[0]?.count) {
-                    const { provider, domain } = extractDomain(email.from);
-                    const url = `https://${domain}`;
-                    await getMetaData(url).then(
-                      async (data) =>
-                        await bigquery.client
-                          .dataset("main")
-                          .table("hotels")
-                          .insert([
-                            {
-                              email: email.from,
-                              hotel: data.provider ?? provider,
-                            },
-                          ]),
-                    );
-                  }
+                if (hotelExists?.count == 0) {
+                  console.log(`Hotel not found for email: ${email.from}`);
+                  await handleNewHotel(bigquery, email);
+                }
 
-                  return email;
-                },
-              );
-            }),
-          )
-        ).filter((email) => email !== null);
+                // Ensure each email is inserted only after confirming that hotel insertion occurred.
+                await bigquery.client.dataset("main").table("emails").insert([email]);
 
-        /**
-         * Inserts processed email data into the BigQuery table "emails".
-         * Post-insertion, the corresponding Gmail messages are labeled accordingly.
-         */
-        await bigquery.client
-          .dataset("main")
-          .table("emails")
-          .insert(processedEmails)
-          .then(
-            async () =>
-              await gmail.client.users.messages.batchModify({
-                userId: "me",
-                requestBody: {
-                  ids: processedEmails.map((email) => email.messageId),
-                  addLabelIds: ["Label_4124065210019607459"],
-                },
-              }),
-          );
+                return email;
+              } catch (error) {
+                console.error("An error occurred while processing email:", error);
+                return null;
+              }
+            }))
+        ).filter(email => email !== null);
 
-        count += processedEmails.length;
+        if (processedEmails.length > 0) {
+          // Now that both hotel and email data is inserted, proceed to label the messages.
+          await gmailClient.client.users.messages.batchModify({
+            userId: "me",
+            requestBody: {
+              ids: processedEmails.map(email => email.messageId),
+              addLabelIds: [LABEL_ID],
+            }
+          }).then(() => {
+            console.log(processedEmails.map(email => email.messageId).join(", "));
+            processedEmailCount += processedEmails.length;
+            console.log(`Processed ${processedEmailCount} emails.`);
+          }).catch(error => {
+            console.error("An error occurred while labelling emails:", error);
+          });
+        }
 
-        console.log(`Processed ${count} emails.`);
         nextPageToken = messagesResponse.data.nextPageToken;
       } catch (error) {
-        console.log("An error occurred while processing emails:", error);
+        console.error("An error occurred while processing batch:", error);
         nextPageToken = undefined;
       }
     } while (nextPageToken);
   }),
   watchGmail: publicProcedure.mutation(async () => {
-    const gmail = new Gmail();
-    await gmail.client.users.watch({
+    const gmailClient = new Gmail();
+    await gmailClient.client.users.watch({
       userId: "me",
       requestBody: {
         topicName: "projects/stardrips/topics/gmail",
       },
     });
-  })
+  }),
 });
 
 export { pubSubRouter };
