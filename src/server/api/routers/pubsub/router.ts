@@ -52,7 +52,7 @@ const pubSubRouter = createTRPCRouter({
         const messagesResponse = await fetchGmailMessages(gmailClient, nextPageToken ?? undefined);
 
         const processedEmails = (
-            await Promise.all(messagesResponse.data.messages!.map(async (item) => {
+            await Promise.all((messagesResponse.data.messages ?? []).map(async (item) => {
               try {
                 const email = await processGmailMessage(gmailClient, item);
                 if (!email) return null;
