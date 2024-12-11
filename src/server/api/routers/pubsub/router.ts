@@ -5,30 +5,51 @@ import {
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { BigQuery } from "~/server/api/common/bigquery";
 import { Gmail } from "~/server/api/common/gmail";
-import { extractDomain } from "~/features/pubsub/helpers/domain";
-import getMetaData from "metadata-scraper";
 
+/**
+ * BQTrackedEmails
+ */
 const LABEL_ID = "Label_4124065210019607459";
 
 /**
  * Extracts metadata and inserts a new hotel record into BigQuery.
  */
-async function handleNewHotel(bigquery: BigQuery, email: { from: string }) {
-  const { provider, domain } = extractDomain(email.from);
+async function handleNewHotel(
+  gmailClient: Gmail,
+  bigquery: BigQuery,
+  email: { from: string },
+) {
   try {
-    const url = `https://${domain}`;
-    const data = await getMetaData(url);
+    const hotel = await bigquery.query({
+      query: "SELECT * FROM main.emails WHERE `from` = @from LIMIT 1",
+      params: {
+        from: email.from,
+      },
+    });
 
-    await bigquery.client.dataset("main").table("hotels").insert([{
-      email: email.from,
-      hotel: data.provider,
-    }]);
+    const message = await gmailClient.client.users.messages.get({
+      userId: "me",
+      id: hotel[0]?.messageId as string,
+    });
+
+    const hotelName = message.data.payload?.headers
+      ?.find((h) => h.name === "From")
+      ?.value?.split("<")[0]
+      ?.replace(/[\\\"*]/g, "")
+      ?.replace(/\s+/g, " ")
+      ?.trim();
+
+    await bigquery.client
+      .dataset("main")
+      .table("hotels")
+      .insert([
+        {
+          email: email.from,
+          hotel: hotelName ?? "Unknown",
+        },
+      ]);
   } catch {
-    console.warn("Failed to insert record, retrying...");
-    await bigquery.client.dataset("main").table("hotels").insert([{
-      email: email.from,
-      hotel: provider,
-    }]);
+    console.warn("Failed to insert new hotel email: ", email.from);
   }
 }
 
@@ -43,22 +64,30 @@ const pubSubRouter = createTRPCRouter({
     let processedEmailCount = 0;
     let nextPageToken: string | undefined | null;
 
-    console.log("Total threads", await gmailClient.client.users.getProfile({
-      userId: "me",
-    }));
+    console.log(
+      "Total threads",
+      await gmailClient.client.users.getProfile({
+        userId: "me",
+      }),
+    );
 
     do {
       try {
-        const messagesResponse = await fetchGmailMessages(gmailClient, nextPageToken ?? undefined);
+        const messagesResponse = await fetchGmailMessages(
+          gmailClient,
+          nextPageToken ?? undefined,
+        );
 
         const processedEmails = (
-            await Promise.all((messagesResponse.data.messages ?? []).map(async (item) => {
+          await Promise.all(
+            (messagesResponse.data.messages ?? []).map(async (item) => {
               try {
                 const email = await processGmailMessage(gmailClient, item);
                 if (!email) return null;
 
                 const [hotelExists] = await bigquery.query<{ count: number }>({
-                  query: "SELECT COUNT(*) FROM main.hotels WHERE email = @email",
+                  query:
+                    "SELECT COUNT(*) FROM main.hotels WHERE email = @email",
                   params: { email: email.from },
                 });
 
@@ -68,31 +97,43 @@ const pubSubRouter = createTRPCRouter({
                 }
 
                 // Ensure each email is inserted only after confirming that hotel insertion occurred.
-                await bigquery.client.dataset("main").table("emails").insert([email]);
+                await bigquery.client
+                  .dataset("main")
+                  .table("emails")
+                  .insert([email]);
 
                 return email;
               } catch (error) {
-                console.error("An error occurred while processing email:", error);
+                console.error(
+                  "An error occurred while processing email:",
+                  error,
+                );
                 return null;
               }
-            }))
-        ).filter(email => email !== null);
+            }),
+          )
+        ).filter((email) => email !== null);
 
         if (processedEmails.length > 0) {
           // Now that both hotel and email data is inserted, proceed to label the messages.
-          await gmailClient.client.users.messages.batchModify({
-            userId: "me",
-            requestBody: {
-              ids: processedEmails.map(email => email.messageId),
-              addLabelIds: [LABEL_ID],
-            }
-          }).then(() => {
-            console.log(processedEmails.map(email => email.messageId).join(", "));
-            processedEmailCount += processedEmails.length;
-            console.log(`Processed ${processedEmailCount} emails.`);
-          }).catch(error => {
-            console.error("An error occurred while labelling emails:", error);
-          });
+          await gmailClient.client.users.messages
+            .batchModify({
+              userId: "me",
+              requestBody: {
+                ids: processedEmails.map((email) => email.messageId),
+                addLabelIds: [LABEL_ID],
+              },
+            })
+            .then(() => {
+              console.log(
+                processedEmails.map((email) => email.messageId).join(", "),
+              );
+              processedEmailCount += processedEmails.length;
+              console.log(`Processed ${processedEmailCount} emails.`);
+            })
+            .catch((error) => {
+              console.error("An error occurred while labelling emails:", error);
+            });
         }
 
         nextPageToken = messagesResponse.data.nextPageToken;
