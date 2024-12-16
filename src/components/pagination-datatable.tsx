@@ -38,7 +38,7 @@ const PaginationDataTable = ({ maxSize }: PaginationDatatable) => {
           max={maxPage}
           type="number"
           className="w-16"
-          defaultValue={searchParams.get("page") ?? 1}
+          defaultValue={value}
           onChange={(e) => {
             const value = parseInt(e.currentTarget.value);
             if (value > maxPage) return;
