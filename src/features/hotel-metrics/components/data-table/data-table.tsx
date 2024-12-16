@@ -40,7 +40,7 @@ import {
   SelectTrigger,
 } from "~/components/ui/select";
 import { DataTableSkeleton } from "~/components/table/table-skeleton";
-import { type Hotel } from "~/server/api/routers/hotels/router";
+import { type Hotel } from "~/server/api/routers/hotel-metrics/router";
 
 export const DataTable = <TValue,>({
   columns,

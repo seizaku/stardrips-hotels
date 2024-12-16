@@ -1,6 +1,6 @@
 import { type Row } from "@tanstack/react-table";
 import { create } from "zustand";
-import { type Hotel } from "~/server/api/routers/hotels/router";
+import { type Hotel } from "~/server/api/routers/hotel-metrics/router";
 
 export interface TableStore {
   data: Hotel[];

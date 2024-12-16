@@ -1,105 +1,30 @@
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { BigQuery } from "~/server/api/common/bigquery";
 import { z } from "zod";
+import { BigQuery } from "~/server/api/common/bigquery";
 
-export type Hotel = {
-  email: string;
-  domain: string;
-  hotel: string;
-  total_emails: number;
-  first_email: { value: string };
-  last_email: { value: string };
-  avg_time_between_emails: number;
-  is_valid_hotel: boolean;
-  to: string[];
-  count: number;
-  last_updated: { value: string };
-};
-
-/**
- * Retrieves hotel and hotel group data along with email metrics from BigQuery.
- */
 const hotelRouter = createTRPCRouter({
-  fetchAll: publicProcedure.query(async () => {
-    const bigquery = new BigQuery();
-
-    const rows = await bigquery.query<Hotel>({
-      query: `
-        SELECT * FROM stardrips.email_metrics
-      `,
-    });
-
-    return rows;
-  }),
-  update: publicProcedure
+  fetchWithQuery: publicProcedure
     .input(
       z.object({
-        rows: z.any(),
+        page: z.number(),
+        size: z.number(),
+        query: z.string(),
       }),
     )
-    .mutation(async ({ input }) => {
+    .query(async ({ input }) => {
       const bigquery = new BigQuery();
-      for (const item of input.rows as Hotel[]) {
-        const params = Object.keys(item)
-          .filter(
-            (column) =>
-              typeof column === "string" && !["email", "from"].includes(column),
-          )
-          .reduce(
-            (acc, column) => {
-              const value = item[column as keyof Hotel];
-
-              switch (column as keyof Hotel) {
-                case "last_updated":
-                  acc[column] = new Date().toISOString();
-                  break;
-                case "is_valid_hotel":
-                  // Handle boolean conversion from string values
-                  const boolValue = (value as string)?.toLowerCase();
-                  acc[column] =
-                    boolValue === "true"
-                      ? true
-                      : boolValue === "false"
-                        ? false
-                        : value;
-                  break;
-                default:
-                  // If the value is an object, stringify it, otherwise, keep it as is
-                  acc[column] =
-                    value && typeof value === "object"
-                      ? JSON.stringify(value)
-                      : value;
-                  break;
-              }
-              return acc;
-            },
-            {} as Record<string, unknown>,
-          );
-
-        const setClause = Object.keys(item)
-          .filter((column) => column !== "email" && column !== "from") // Exclude 'email' and 'from' from SET clause
-          .map((column) => `${column} = @${column}`)
-          .join(", ");
-
-        const query = `
-          UPDATE stardrips.hotels 
-          SET ${setClause}
-          WHERE email = @email
-        `;
-
-        try {
-          await bigquery.client.query({
-            query,
-            params: { ...params, email: item.email },
-          });
-
-          console.log(`Update successful for email: ${item.email}`);
-        } catch (err) {
-          console.error("Error running query:", err);
-        }
-      }
-
-      return true;
+      return await bigquery.query({
+        query: `
+          SELECT *
+          FROM main.hotels LIMIT @size
+          OFFSET @offset
+        `,
+        params: {
+          page: input.page,
+          size: input.size,
+          query: input.query,
+        },
+      });
     }),
 });
 

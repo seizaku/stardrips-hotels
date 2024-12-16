@@ -1,7 +1,7 @@
-import { type Hotel } from "~/server/api/routers/hotels/router";
+import { type Hotel } from "~/server/api/routers/hotel-metrics/router";
 import type { Column, Row, Table } from "@tanstack/react-table";
 import { useForm } from "react-hook-form";
-import { TableStore } from "~/features/hotels/stores/table-store";
+import { TableStore } from "~/features/hotel-metrics/stores/table-store";
 import { Checkbox } from "~/components/ui/checkbox";
 import { Input } from "~/components/ui/input";
 

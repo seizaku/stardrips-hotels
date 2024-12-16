@@ -4,9 +4,9 @@ import { type ColumnDef } from "@tanstack/react-table";
 import moment from "moment";
 import { Button } from "~/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
-import { CellEdit } from "~/features/hotels/components/cell-edit";
+import { CellEdit } from "~/features/hotel-metrics/components/cell-edit";
 import { tableFilterFn } from "~/lib/table";
-import { type Hotel } from "~/server/api/routers/hotels/router";
+import { type Hotel } from "~/server/api/routers/hotel-metrics/router";
 
 export const columns: ColumnDef<Hotel>[] = [
   {
