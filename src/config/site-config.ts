@@ -1,8 +1,16 @@
 const siteConfig = {
   navigationLinks: [
     {
-      title: "Hotel / Hotel Groups",
+      title: "Hotels",
       href: "/hotels",
+    },
+    {
+      title: "Match Listings",
+      href: "/match-listings",
+    },
+    {
+      title: "Metrics",
+      href: "/hotel-metrics",
     },
     {
       title: "Emails",

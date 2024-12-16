@@ -1,19 +1,21 @@
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 import { promotionRouter } from "./routers/promos/router";
-import { hotelRouter } from "./routers/hotels/router";
+import { hotelMetricsRouter } from "~/server/api/routers/hotel-metrics/router";
 import { emailRouter } from "./routers/emails/router";
 import { listingsRouter } from "~/server/api/routers/listings/router";
 import { pubSubRouter } from "./routers/pubsub/router";
 import { authRouter } from "./routers/auth/router";
+import {hotelRouter} from "~/server/api/routers/hotels/router";
 
 /**
  * This is the primary router for your server.
  *
- * All routers added in /api/routers should be manually added here.
+ * All routers added in /api/routers should be manually added here.hotelRouter
  */
 export const appRouter = createTRPCRouter({
   email: emailRouter,
-  hotel: hotelRouter,
+  hotelMetrics: hotelMetricsRouter,
+  hotels: hotelRouter,
   promotion: promotionRouter,
   listings: listingsRouter,
   pubSub: pubSubRouter,
