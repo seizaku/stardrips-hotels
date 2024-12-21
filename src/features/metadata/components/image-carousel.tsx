@@ -1,30 +1,30 @@
-import Image from "next/image"
-import * as React from "react"
+import Image from "next/image";
+import * as React from "react";
 
-import { Card, CardContent } from "~/components/ui/card"
+import { Card, CardContent } from "~/components/ui/card";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "~/components/ui/carousel"
+} from "~/components/ui/carousel";
 
 const ImageCarousel = ({ images }: { images: string[] }) => {
   return (
-    <Carousel className="w-64 flex items-center mx-auto">
+    <Carousel className="mx-auto flex w-64 items-center">
       <CarouselContent>
         {images.map((src) => (
           <CarouselItem key={src}>
             <div className="p-1">
-              <Card className="border-0 shadow-none bg-transparent">
+              <Card className="border-0 bg-transparent shadow-none">
                 <CardContent className="flex items-center justify-center p-1">
-                  <Image
+                  <img
                     src={src}
                     alt="Hotel Image"
                     width={500}
                     height={500}
-                    className="rounded-md h-44 w-64 object-cover"
+                    className="h-44 w-64 rounded-md object-cover"
                   />
                 </CardContent>
               </Card>
@@ -32,11 +32,10 @@ const ImageCarousel = ({ images }: { images: string[] }) => {
           </CarouselItem>
         ))}
       </CarouselContent>
-      <CarouselPrevious className="h-8 w-8 -left-4" />
-      <CarouselNext className="h-8 w-8 -right-4" />
+      <CarouselPrevious className="-left-4 h-8 w-8" />
+      <CarouselNext className="-right-4 h-8 w-8" />
     </Carousel>
-  )
-}
+  );
+};
 
-export { ImageCarousel }
-
+export { ImageCarousel };
