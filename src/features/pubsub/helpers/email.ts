@@ -21,14 +21,14 @@ const extractHeaderValue = (name: string, value: string): string => {
 };
 
 const extractHeaders = (
-    headers: gmail_v1.Schema$MessagePartHeader[] = []
+  headers: gmail_v1.Schema$MessagePartHeader[] = []
 ): MailHeaders =>
-    headers.reduce((acc, { name, value }) => {
-      if (value && ["From", "To", "Subject", "Date"].includes(name!)) {
-        acc[name?.toLowerCase() as keyof MailHeaders] = extractHeaderValue(name!, value);
-      }
-      return acc;
-    }, {} as MailHeaders);
+  headers.reduce((acc, { name, value }) => {
+    if (value && ["From", "To", "Subject", "Date"].includes(name!)) {
+      acc[name?.toLowerCase() as keyof MailHeaders] = extractHeaderValue(name!, value);
+    }
+    return acc;
+  }, {} as MailHeaders);
 
 const extractBody = (parts: gmail_v1.Schema$MessagePart[] = []): string => {
   for (const part of parts) {
@@ -44,8 +44,8 @@ const extractBody = (parts: gmail_v1.Schema$MessagePart[] = []): string => {
 
 const parseHTML = (payload: gmail_v1.Schema$Message["payload"]): string => {
   return payload?.body?.data
-      ? Base64.decode(payload.body.data).trim()
-      : extractBody(payload?.parts);
+    ? Base64.decode(payload.body.data).trim()
+    : extractBody(payload?.parts);
 };
 
 const parseEmail = (data: gmail_v1.Schema$Message, threadId: string): Email => {
