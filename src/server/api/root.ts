@@ -7,6 +7,7 @@ import { pubSubRouter } from "./routers/pubsub/router";
 import { authRouter } from "./routers/auth/router";
 import { hotelRouter } from "~/server/api/routers/hotels/router";
 import { matchListingRouter } from "./routers/match-listings/router";
+import { metadataRouter } from "./routers/metadata/router";
 
 /**
  * This is the primary router for your server.
@@ -18,6 +19,7 @@ export const appRouter = createTRPCRouter({
   hotelMetrics: hotelMetricsRouter,
   matchListings: matchListingRouter,
   hotels: hotelRouter,
+  metadata: metadataRouter,
   promotion: promotionRouter,
   listings: listingsRouter,
   pubSub: pubSubRouter,

@@ -9,16 +9,20 @@ const siteConfig = {
       href: "/match-listings",
     },
     {
-      title: "Metrics",
-      href: "/hotel-metrics",
-    },
-    {
       title: "Emails",
       href: "/emails",
     },
     {
+      title: "Hotel Metadata",
+      href: "/metadata",
+    },
+    {
       title: "Promotions",
       href: "/promotions",
+    },
+    {
+      title: "Metrics",
+      href: "/hotel-metrics",
     },
   ],
 };
