@@ -41,6 +41,8 @@ const DataTable = ({ columns, data, maxSize }: DataTable) => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     body: false,
+    threadId: false,
+    messageId: false,
   });
 
   const [pagination, setPagination] = useState({

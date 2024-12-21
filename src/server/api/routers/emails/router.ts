@@ -28,7 +28,27 @@ const emailRouter = createTRPCRouter({
       const bigquery = new BigQuery();
 
       // Define columns to search
-      const searchColumns = ["threadId", "messageId", "subject", "snippet", "`from`", "`to`", "date", "mimeType", "body"];
+      const searchColumns = [
+        "threadId",
+        "messageId",
+        "subject",
+        "snippet",
+        "`from`",
+        "`to`",
+        "date",
+        "mimeType",
+        "body",
+        "hotel_name",
+        "chains_and_brands",
+        "city",
+        "country",
+        "group_type",
+        "group_name",
+        "rooms",
+        "star_rating",
+        "review_score",
+        "website",
+      ];
 
       // Dynamically generate WHERE conditions
       const whereConditions = searchColumns
@@ -38,7 +58,7 @@ const emailRouter = createTRPCRouter({
       return await bigquery.query<Email>({
         query: `
           SELECT *
-          FROM main.emails 
+          FROM main.emails_with_metadata 
           WHERE ${whereConditions}
           LIMIT @limit
           OFFSET @offset
@@ -54,8 +74,8 @@ const emailRouter = createTRPCRouter({
     const bigquery = new BigQuery();
     return (await bigquery.query<{ "f0_": number }>({
       query: `
-        SELECT COUNT(threadId)
-        FROM main.emails 
+        SELECT COUNT(messageId)
+        FROM main.emails_with_metadata 
         `,
     }))[0]?.f0_;
   })
