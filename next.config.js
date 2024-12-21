@@ -7,13 +7,8 @@ import "./src/env.js";
 /** @type {import("next").NextConfig} */
 const config = {
   images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "cf.bstatic.com",
-      }
-    ]
-  }
+    domains: ["cf.bstatic.com"],
+  },
 };
 
 export default config;
