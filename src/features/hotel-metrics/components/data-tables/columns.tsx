@@ -37,28 +37,13 @@ export const columns: ColumnDef<HotelMetrics>[] = [
     minSize: 300,
   },
   {
-    accessorKey: "count",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Messages Count
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    sortingFn: "alphanumeric",
-    filterFn: tableFilterFn,
-    minSize: 300,
-  },
-  {
     accessorKey: "total_emails",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Total Emails
+        Messages Count
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
