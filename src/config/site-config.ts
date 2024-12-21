@@ -20,10 +20,6 @@ const siteConfig = {
       title: "Promotions",
       href: "/promotions",
     },
-    {
-      title: "Track Listings",
-      href: "/listings",
-    },
   ],
 };
 
