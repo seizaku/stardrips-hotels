@@ -73,12 +73,12 @@ const DataTable = ({ columns, data, maxSize }: DataTable) => {
 
   return (
     <div className="overflow-x-auto">
-      <h1 className="text-2xl font-medium">Hotels & Properties</h1>
+      <h1 className="text-2xl font-medium">Match Listings</h1>
       <p className="mb-2 text-sm text-muted-foreground">
         {maxSize} total rows.
       </p>
       <p className="max-w-2xl text-sm">
-        {`This table displays each individual hotel or hotel group from the various emails received, along with their properties, either via automated or manual matching.`}{" "}
+        {`This table displays a list of Google Sheet listings and indicates whether they are matched with our BigQuery hotel listings. You can also manually match them.`}{" "}
       </p>
 
       <div className="flex flex-col justify-between gap-2 py-4 sm:flex-row">
