@@ -37,12 +37,12 @@ const hotelRouter = createTRPCRouter({
           FROM main.hotel_properties 
           WHERE ${whereConditions}
           LIMIT @limit
-          OFFSET @page
+          OFFSET @offset
           `,
         params: {
-          page: parseInt(input.page ?? "1") - 1,
+          offset: (parseInt(input.page ?? "1") - 1) * parseInt(input.limit ?? "100"),
           limit: parseInt(input.limit ?? "100"),
-          query: input.query ?? ""
+          query: input.query ?? "",
         },
       });
     }),
