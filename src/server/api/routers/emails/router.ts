@@ -1,12 +1,10 @@
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { BigQuery } from "~/server/api/common/bigquery";
 import { z } from "zod";
+import { BigQuery } from "~/server/api/common/bigquery";
 
-export type Email = {
+export interface Email {
   threadId: string;
   messageId: string;
-  labelIds?: string;
-  category?: string;
   subject: string;
   snippet: string;
   from: string;
@@ -16,59 +14,51 @@ export type Email = {
   body: string;
 };
 
-export type EmailWithPromocode = Email & {
-  hotel: string;
-  email: string;
-  email_per_property: string;
-  date: { value: string };
-  promo_code: string;
-  start_date: { value: string };
-  end_date: { value: string };
-  period: string;
-  value: string;
-  summary: string;
-};
 
-/**
- * Retrieves all emails from BigQuery.
- */
 const emailRouter = createTRPCRouter({
-  fetchWithPagination: publicProcedure
+  fetchWithQuery: publicProcedure
     .input(
       z.object({
-        limit: z.number().int().positive().default(10),
-        offset: z.number().int().nonnegative().default(0),
+        page: z.string().optional(),
+        limit: z.string().optional(),
+        query: z.string().optional(),
       }),
     )
     .query(async ({ input }) => {
       const bigquery = new BigQuery();
 
-      const rows = await bigquery.query<EmailWithPromocode>({
+      // Define columns to search
+      const searchColumns = ["threadId", "messageId", "subject", "snippet", "`from`", "`to`", "date", "mimeType", "body"];
+
+      // Dynamically generate WHERE conditions
+      const whereConditions = searchColumns
+        .map((column) => `LOWER(${column}) LIKE LOWER(CONCAT('%', @query, '%'))`)
+        .join(" OR ");
+
+      return await bigquery.query<Email>({
         query: `
           SELECT *
-          FROM stardrips.hotel_emails
-          ORDER BY email DESC
-          LIMIT @limit OFFSET @offset
-        `,
+          FROM main.emails 
+          WHERE ${whereConditions}
+          LIMIT @limit
+          OFFSET @offset
+          `,
         params: {
-          limit: input.limit,
-          offset: input.offset,
+          offset: (parseInt(input.page ?? "1") - 1) * parseInt(input.limit ?? "100"),
+          limit: parseInt(input.limit ?? "100"),
+          query: input.query ?? "",
         },
       });
-
-      return rows;
     }),
-
-  fetchCount: publicProcedure.query(async () => {
+  count: publicProcedure.query(async () => {
     const bigquery = new BigQuery();
-    const result = await bigquery.client
-      .dataset("stardrips")
-      .table("clean_emails")
-      .getMetadata();
-
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
-    return { count: result[0].numRows };
-  }),
+    return (await bigquery.query<{ "f0_": number }>({
+      query: `
+        SELECT COUNT(threadId)
+        FROM main.emails 
+        `,
+    }))[0]?.f0_;
+  })
 });
 
 export { emailRouter };
