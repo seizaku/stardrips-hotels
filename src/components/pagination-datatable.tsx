@@ -26,46 +26,49 @@ const PaginationDataTable = ({ maxSize }: PaginationDatatable) => {
       page: value.toString(),
     });
 
-    router.push(`${window.location.origin}/${pathname}?${updatedParams.toString()}`);
-  }, [value])
+    router.push(`${pathname}?${updatedParams.toString()}`);
+  }, [value]);
 
-  return <>
-    <div className="flex items-center justify-between space-x-2 py-4">
-      <div className="flex w-full max-w-lg items-center gap-2 text-sm text-muted-foreground">
-        Page
-        <Input
-          min={1}
-          max={maxPage}
-          type="number"
-          className="w-16"
-          defaultValue={searchParams.get("page") ?? value}
-          onChange={(e) => {
-            const value = parseInt(e.currentTarget.value);
-            if (value > maxPage) return;
-            setPage(value);
-          }}
-        />
-        of {maxPage}
+  return (
+    <>
+      <div className="flex items-center justify-between space-x-2 py-4">
+        <div className="flex w-full max-w-lg items-center gap-2 text-sm text-muted-foreground">
+          Page
+          <Input
+            min={1}
+            max={maxPage}
+            type="number"
+            className="w-16"
+            defaultValue={searchParams.get("page") ?? value}
+            onChange={(e) => {
+              const value = parseInt(e.currentTarget.value);
+              if (value > maxPage) return;
+              setPage(value);
+            }}
+          />
+          of {maxPage}
+        </div>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setPage((prev) => prev - 1)}
+            disabled={page == 1}
+          >
+            Previous
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setPage((prev) => prev + 1)}
+            disabled={page == maxPage}
+          >
+            Next
+          </Button>
+        </div>
       </div>
-      <div className="flex gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setPage(prev => prev - 1)}
-          disabled={page == 1}
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setPage(prev => prev + 1)}
-          disabled={page == maxPage}
-        >
-          Next
-        </Button>
-      </div>
-    </div></>;
+    </>
+  );
 };
 
 export { PaginationDataTable };

@@ -2,7 +2,14 @@ import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useDebounce } from "use-debounce";
 import { Input } from "./ui/input";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger } from "./ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+} from "./ui/select";
 import { Rows2Icon } from "lucide-react";
 
 const SearchDataTable = () => {
@@ -23,7 +30,7 @@ const SearchDataTable = () => {
       limit: limitValue.toString(),
     });
 
-    router.push(`${window.location.origin}/${pathname}?${updatedParams.toString()}`);
+    router.push(`${pathname}?${updatedParams.toString()}`);
   }, [textValue, limitValue]);
 
   return (
@@ -58,7 +65,8 @@ const SearchDataTable = () => {
             <SelectItem value="500">500</SelectItem>
           </SelectGroup>
         </SelectContent>
-      </Select ></>
+      </Select>
+    </>
   );
 };
 
