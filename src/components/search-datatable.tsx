@@ -9,7 +9,7 @@ const SearchDataTable = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  const [text, setText] = useState("");
+  const [text, setText] = useState(searchParams.get("query") ?? "");
   const [limit, setLimit] = useState(100);
   const [textValue] = useDebounce(text, 200);
   const [limitValue] = useDebounce(limit, 200);
