@@ -5,6 +5,7 @@ import {
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { BigQuery } from "~/server/api/common/bigquery";
 import { Gmail } from "~/server/api/common/gmail";
+import { type Email } from "~/server/api/routers/emails/router";
 
 /**
  * BQTrackedEmails
@@ -20,7 +21,7 @@ async function handleNewHotel(
   email: { from: string },
 ) {
   try {
-    const hotel = await bigquery.query({
+    const hotel = await bigquery.query<Email>({
       query: "SELECT * FROM main.emails WHERE `from` = @from LIMIT 1",
       params: {
         from: email.from,
@@ -29,7 +30,7 @@ async function handleNewHotel(
 
     const message = await gmailClient.client.users.messages.get({
       userId: "me",
-      id: hotel[0]?.messageId as string,
+      id: hotel[0]?.messageId,
     });
 
     const hotelName = message.data.payload?.headers
@@ -93,7 +94,7 @@ const pubSubRouter = createTRPCRouter({
 
                 if (hotelExists?.count == 0) {
                   console.log(`Hotel not found for email: ${email.from}`);
-                  await handleNewHotel(bigquery, email);
+                  await handleNewHotel(gmailClient, bigquery, email);
                 }
 
                 // Ensure each email is inserted only after confirming that hotel insertion occurred.
