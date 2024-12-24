@@ -117,7 +117,7 @@ const DataTable = ({ columns, data, maxSize }: DataTable) => {
           </DropdownMenu>
         </div>
       </div>
-      <div className="rounded-md border h-[63vh] relative overflow-y-auto hide-scrollbar">
+      <div className="rounded-md border h-[63vh] relative overflow-y-auto custom-scrollbar">
         <Table style={{ minWidth: "100%", tableLayout: "fixed" }}>
           <TableHeader className="sticky top-0 border-b">
             {table.getHeaderGroups().map((headerGroup) => (
