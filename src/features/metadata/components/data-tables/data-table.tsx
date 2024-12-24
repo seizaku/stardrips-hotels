@@ -73,12 +73,12 @@ const DataTable = ({ columns, data, maxSize }: DataTable) => {
 
   return (
     <div className="overflow-x-auto">
-      <h1 className="text-2xl font-medium">Hotels & Properties</h1>
+      <h1 className="text-2xl font-medium">Booking.com Metadata</h1>
       <p className="mb-2 text-sm text-muted-foreground">
         {maxSize} total rows.
       </p>
       <p className="max-w-2xl text-sm">
-        {`This table displays each individual hotel or hotel group from Alltophotels listing, along with their booking.com metadata.`}{" "}
+        {`This table lists all properties from booking.com and left joins against alltophotels.`}{" "}
       </p>
 
       <div className="flex flex-col justify-between gap-2 py-4 sm:flex-row">

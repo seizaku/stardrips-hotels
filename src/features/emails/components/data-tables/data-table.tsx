@@ -80,7 +80,7 @@ const DataTable = ({ columns, data, maxSize }: DataTable) => {
         {maxSize} total rows.
       </p>
       <p className="max-w-2xl text-sm">
-        {`This table displays each emails tracked by Stardrips from Gmail API.`}{" "}
+        {`This table displays each emails tracked by Stardrips from Gmail API matched with all the properties we have.`}{" "}
       </p>
 
       <div className="flex flex-col justify-between gap-2 py-4 sm:flex-row">
@@ -117,9 +117,9 @@ const DataTable = ({ columns, data, maxSize }: DataTable) => {
           </DropdownMenu>
         </div>
       </div>
-      <div className="rounded-md border">
+      <div className="rounded-md border h-[63vh] relative overflow-y-auto hide-scrollbar">
         <Table style={{ minWidth: "100%", tableLayout: "fixed" }}>
-          <TableHeader>
+          <TableHeader className="sticky top-0 border-b">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {

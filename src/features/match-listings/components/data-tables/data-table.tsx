@@ -78,7 +78,7 @@ const DataTable = ({ columns, data, maxSize }: DataTable) => {
         {maxSize} total rows.
       </p>
       <p className="max-w-2xl text-sm">
-        {`This table displays a list of Google Sheet listings and indicates whether they are matched with our BigQuery hotel listings. You can also manually match them.`}{" "}
+        {`This table displays a list of Google Sheet listings and indicates whether they are matched with our hotel listings from the google bigquery table. You can also manually match them.`}{" "}
       </p>
 
       <div className="flex flex-col justify-between gap-2 py-4 sm:flex-row">

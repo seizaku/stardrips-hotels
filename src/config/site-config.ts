@@ -13,7 +13,7 @@ const siteConfig = {
       href: "/emails",
     },
     {
-      title: "Hotel Metadata",
+      title: "Hotel Metadata (Booking.com)",
       href: "/metadata",
     },
     {
